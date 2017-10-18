@@ -8,6 +8,7 @@ struct stdutil
 {
     enum FORMAT
     {
+        //http://misc.flogisoft.com/bash/tip_colors_and_formatting
         //set
         BOLD = 1,
         DIM = 2,

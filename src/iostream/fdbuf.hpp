@@ -49,11 +49,11 @@ class fdbuf
         }
         size_t getg(byte* c, size_t s)//get
         {
-            return ::read(fd, c, s);
+            return streambuf::zoi_z(::read(fd, c, s));
         }
         size_t putp(const byte* c, size_t s)
         {
-            return ::write(fd, c, s);
+            return streambuf::zoi_z(::write(fd, c, s));
         }
     protected:
         int fd;

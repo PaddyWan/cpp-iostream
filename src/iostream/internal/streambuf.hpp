@@ -44,6 +44,18 @@ class internal_streambuf
             return b.getg(d, s);
         }
 
+
+        //put flush
+        template<OBuf obuf>
+        static void putf(obuf&& o) requires FlushOBuf<obuf>
+        {
+            o.putf();
+        }
+        template<OBuf obuf>
+        static void putf(obuf&& o) requires !FlushOBuf<obuf>
+        {
+        }
+
         //put single
         template<OBuf obuf>
         static int putp(obuf& i, byte c) requires SinglePutOBuf<obuf>

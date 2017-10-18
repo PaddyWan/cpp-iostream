@@ -16,15 +16,11 @@ using std::byte;
 #include "arraybuf.hpp"
 #include "basicstream.hpp"
 #include "bzbuf.hpp"
-#include "desbuf.hpp"
 #include "fdbuf.hpp"
 #include "fdutil.hpp"
 #include "filebuf.hpp"
-#include "lzmabuf.hpp"
-#include "polymorphismbuf.hpp"
 #include "socketbuf.hpp"
 #include "stdutil.hpp"
-#include "teebuf.hpp"
 #include "zbuf.hpp"
 
 #endif//IOSTREAM_HPP

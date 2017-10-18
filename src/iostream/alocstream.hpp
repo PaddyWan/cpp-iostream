@@ -19,9 +19,20 @@ class alocistream
         {
             return make_pair(b, streambuf::getg(i, b, s));
         }
-        std::pair<byte*, size_t> get()
+        std::pair<byte*, size_t> get()//without s means maximum s
         {
             return  get(c);
+        }
+        std::pair<byte*, size_t> get_more(std::pair<byte*, size_t> p, size_t s)//s = how much more you want
+        {
+            if(p.first == b)
+                return make_pair(b, p.second + streambuf::getg(i, b + p.second, s));
+            else
+                return p;//todo
+        }
+        std::pair<byte*, size_t> get_more(std::pair<byte*, size_t> p)
+        {
+            return get_more(p, c - p.second);
         }
         static membuf buf(std::pair<byte*, size_t> p)
         {

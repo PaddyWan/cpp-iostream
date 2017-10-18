@@ -4,7 +4,7 @@ int main()
 {
     ifilebuf src("random");
     ofilebuf dst("randomnewcpp");
-    utilstream::copy(src,dst);
+    utilstream::copy(src, dst);
     return 0;
 }
 

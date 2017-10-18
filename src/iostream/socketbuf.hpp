@@ -7,10 +7,30 @@
 
 #include "fdbuf.hpp"
 
-class socketutil
+class socketbuf: public fdbuf
 {
     public:
-        socketutil() = delete;
+
+        socketbuf(int fd): fdbuf(fd)
+        {
+        }
+
+
+        void time(size_t sec, size_t usec)
+        {
+            struct timeval tv;
+            tv.tv_usec = usec;
+            tv.tv_sec = sec;
+            setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval));
+        }
+        void block(bool b)
+        {
+            const int flags = fcntl(fd, F_GETFL, 0);
+            if(b)
+                fcntl(fd, F_SETFL, flags & (~O_NONBLOCK));
+            else
+                fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+        }
 
         template<String stringT>
         static uint get_addr(const stringT& ip)
@@ -31,29 +51,28 @@ class socketutil
         }
 };
 
-class tcpbuf: public fdbuf
+class tcpbuf: public socketbuf
 {
     public:
         template<String stringT>
-        tcpbuf(const stringT& ip, const uint poort): fdbuf(getsocket(ip, poort))
+        tcpbuf(const stringT& ip, const uint poort): socketbuf(getsocket(ip, poort))
         {
         }
-        tcpbuf(int fd): fdbuf(fd)
+        tcpbuf(int fd): socketbuf(fd)
         {
-        }/*
-        size_t getg(byte* c, size_t s)//get
-        {
-            return ::recv(fd, c, s, 0);
         }
-        size_t putp(const byte* c, size_t s)
-        {
-            return ::send(fd, c, s, 0);
-        }*/
+        /*size_t getg(byte* c, size_t s)//get
+          {
+          return ::recv(fd, c, s, 0);
+          }
+          size_t putp(const byte* c, size_t s)
+          {
+          return ::send(fd, c, s, 0);
+          }*/
         //recv/send
     protected:
         template<String stringT>
         static int getsocket(const stringT& ip, const uint poort)
-
         {
             const int fd = socket(AF_INET, SOCK_STREAM, 0);
             if(fd <= 0)
@@ -63,19 +82,18 @@ class tcpbuf: public fdbuf
                 return -1;
             sockaddr_in addr;
             addr.sin_family = AF_INET;
-            addr.sin_addr.s_addr = socketutil::get_addr(ip);
+            addr.sin_addr.s_addr = socketbuf::get_addr(ip);
             addr.sin_port = htons(poort);
             if(::connect(fd, (struct sockaddr*) & (addr), sizeof(sockaddr_in)) != 0)
                 return -1;
             return fd;
         }
-
 };
 
-/*class udpbuf: public fdbuf
+/*class udpbuf: public socketbuf
 {
     public:
-        udpbuf(const uint poort): fdbuf(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))
+        udpbuf(const uint poort): socketbuf(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))
         {
             reset.sin_family = AF_INET;
             reset.sin_addr.s_addr = INADDR_ANY;

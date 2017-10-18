@@ -8,7 +8,6 @@ class ibuf_iterator
 {
 };
 
-
 template<OBuf obuf>
 class obuf_iterator
 {

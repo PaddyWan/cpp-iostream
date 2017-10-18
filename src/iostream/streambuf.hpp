@@ -14,6 +14,11 @@ class streambuf
             return x + 1 < 2;    //return true if value == 0 or -1 (for getn) (Zero Or Inverse one)
         }
 
+        static constexpr size_t zoi_z(size_t x)
+        {
+            return zoi(x) ? 0 : x;
+        }
+
         //basic functions
         template<IBuf ibuf>
         static void getb(ibuf&& b)
@@ -29,6 +34,12 @@ class streambuf
         static size_t getg(ibuf&& b, byte* d, size_t s)
         {
             return internal_streambuf::getg(b, d, s);
+        }
+
+        template<OBuf obuf>
+        static void putf(obuf&& o)
+        {
+            internal_streambuf::putf(o);
         }
         template<OBuf obuf>
         static int putp(obuf&& s, byte c)

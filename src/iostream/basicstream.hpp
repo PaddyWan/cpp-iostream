@@ -85,6 +85,15 @@ class basicostream
             write(str);
             return *this;
         }
+        basicostream& flush()
+        {
+            streambuf::putf(o);
+            return *this;
+        }
+        basicostream& operator<<(basicostream<obuf>& (*func)(basicostream<obuf>&))
+        {
+            return func(*this);
+        }
 };
 
 template <IBuf ibuf>
@@ -100,6 +109,15 @@ template <OBuf obuf>
 ostream<obuf> make_ostream(obuf& o)
 {
     return ostream<obuf>(o);
+}
+
+//func
+template<OBuf obuf>
+ostream<obuf>& endl(ostream<obuf>& os)
+{
+    os << '\n';
+    os.flush();
+    return os;
 }
 
 #endif//BASICSTREAM_HPP
